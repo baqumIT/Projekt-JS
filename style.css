@@ -1,0 +1,116 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-attachment: fixed;
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 40px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.user-input {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.login,
+.password {
+    padding: 15px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.login::placeholder,
+.password::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.login:focus,
+.password:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.submit {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.submit:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(238, 90, 36, 0.4);
+    background: linear-gradient(135deg, #ff5252, #d63031);
+}
+
+.submit:active {
+    transform: translateY(-1px);
+}
+
+/* Alternative gradient backgrounds - uncomment to use */
+
+/* Ocean Blue Gradient */
+/*
+body {
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+}
+*/
+
+/* Sunset Gradient */
+/*
+body {
+    background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 50%, #e84393 100%);
+}
+*/
+
+/* Forest Green Gradient */
+/*
+body {
+    background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+}
+*/
+
+/* Dark Purple Gradient */
+/*
+body {
+    background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+}
+*/
