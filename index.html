@@ -3,17 +3,802 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
     <title>QUIZ | LOGIN</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+            max-width: 400px;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        .container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 28px;
+            font-weight: 300;
+        }
+
+        .user-input {
+            margin-bottom: 25px;
+        }
+
+        .login, .password {
+            width: 100%;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .login:focus, .password:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+
+        .submit {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .submit:active {
+            transform: translateY(0);
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .message.success {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4caf50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .message.error {
+            background: rgba(244, 67, 54, 0.1);
+            color: #f44336;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
+        .demo-users {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(33, 150, 243, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(33, 150, 243, 0.3);
+        }
+
+        .demo-users h4 {
+            color: #2196f3;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .demo-users p {
+            color: #666;
+            font-size: 12px;
+            margin: 2px 0;
+        }
+
+        .quiz-dashboard {
+            display: none;
+            text-align: center;
+        }
+
+        .quiz-dashboard h2 {
+            color: #4caf50;
+            margin-bottom: 20px;
+        }
+
+        .user-info {
+            background: rgba(76, 175, 80, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            display: none;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(33, 150, 243, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(33, 150, 243, 0.3);
+        }
+
+        .quiz-progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .question-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .question-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .answers-list {
+            list-style: none;
+        }
+
+        .answer-option {
+            margin-bottom: 12px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+        }
+
+        .answer-option:hover {
+            background: rgba(33, 150, 243, 0.1);
+            border-color: rgba(33, 150, 243, 0.3);
+            transform: translateX(5px);
+        }
+
+        .answer-option.selected {
+            background: rgba(33, 150, 243, 0.2);
+            border-color: #2196f3;
+            transform: translateX(5px);
+        }
+
+        .answer-option.correct {
+            background: rgba(76, 175, 80, 0.2);
+            border-color: #4caf50;
+            color: #2e7d32;
+        }
+
+        .answer-option.incorrect {
+            background: rgba(244, 67, 54, 0.2);
+            border-color: #f44336;
+            color: #c62828;
+        }
+
+        .answer-letter {
+            font-weight: bold;
+            margin-right: 10px;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #2196f3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .quiz-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+
+        .quiz-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%);
+            color: white;
+        }
+
+        .btn-prev {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+            color: white;
+        }
+
+        .quiz-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .quiz-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .quiz-results {
+            display: none;
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px auto;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .results-details {
+            background: rgba(33, 150, 243, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid rgba(33, 150, 243, 0.3);
+        }
+
+        .start-quiz-btn {
+            background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .start-quiz-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 25px rgba(76, 175, 80, 0.3);
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-
-        <div class="user-input">
-            <input type="text" placeholder="username" class="login">
-            <input type="password" placeholder="password" class="password">
+        <!-- Login Form -->
+        <div id="loginForm">
+            <h2>Quiz Login</h2>
+            <div class="user-input">
+                <input type="text" placeholder="Username" class="login" id="username">
+                <input type="password" placeholder="Password" class="password" id="password">
+            </div>
+            <button class="submit" onclick="login()">Zaloguj</button>
+            
+            <div id="message" class="message"></div>
+            
+            <!-- Demo Users Info -->
+            <div class="demo-users">
+                <h4>Demo użytkownicy:</h4>
+                <p><strong>admin</strong> / haslo123</p>
+                <p><strong>user</strong> / test123</p>
+                <p><strong>student</strong> / quiz2024</p>
+            </div>
         </div>
-        <button class="submit">Zaloguj</button>
+
+        <!-- Quiz Dashboard (shown after successful login) -->
+        <div id="quizDashboard" class="quiz-dashboard">
+            <h2>Witaj w Quiz!</h2>
+            <div id="userInfo" class="user-info"></div>
+            <p>Gotowy na wyzwanie? Sprawdź swoją wiedzę!</p>
+            <button class="start-quiz-btn" onclick="startQuiz()">Rozpocznij Quiz</button>
+            <button class="logout-btn" onclick="logout()">Wyloguj</button>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quizContainer" class="quiz-container">
+            <div class="quiz-header">
+                <h2>Quiz - Pytanie <span id="currentQuestionNum">1</span> z <span id="totalQuestions">10</span></h2>
+                <div class="quiz-progress">
+                    <span>Postęp:</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <span id="progressPercent">0%</span>
+                </div>
+                <div>Punkty: <span id="currentScore">0</span></div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title" id="questionText"></div>
+                <ul class="answers-list" id="answersList"></ul>
+            </div>
+
+            <div class="quiz-buttons">
+                <button class="quiz-btn btn-prev" id="prevBtn" onclick="previousQuestion()">Poprzednie</button>
+                <button class="quiz-btn btn-next" id="nextBtn" onclick="nextQuestion()">Następne</button>
+                <button class="quiz-btn btn-submit" id="submitBtn" onclick="submitQuiz()" style="display:none;">Zakończ Quiz</button>
+            </div>
+        </div>
+
+        <!-- Quiz Results -->
+        <div id="quizResults" class="quiz-results">
+            <h2>Wyniki Quiz!</h2>
+            <div class="score-circle" id="finalScore"></div>
+            <div class="results-details" id="resultsDetails"></div>
+            <button class="quiz-btn btn-submit" onclick="restartQuiz()">Rozpocznij ponownie</button>
+            <button class="logout-btn" onclick="logout()">Wyloguj</button>
+        </div>
     </div>
+
+    <script>
+        // Simple in-memory database simulation
+        const userDatabase = {
+            'admin': {
+                password: 'haslo123',
+                role: 'administrator',
+                name: 'Administrator',
+                lastLogin: null
+            },
+            'user': {
+                password: 'test123',
+                role: 'user',
+                name: 'Zwykły użytkownik',
+                lastLogin: null
+            },
+            'student': {
+                password: 'quiz2024',
+                role: 'student',
+                name: 'Student',
+                lastLogin: null
+            }
+        };
+
+        // Quiz Questions Database
+        const quizQuestions = [
+            {
+                question: "Która planeta jest najbliżej Słońca?",
+                answers: ["Wenus", "Merkury", "Mars", "Ziemia"],
+                correct: 1
+            },
+            {
+                question: "Ile kontynentów znajduje się na Ziemi?",
+                answers: ["5", "6", "7", "8"],
+                correct: 2
+            },
+            {
+                question: "Który język programowania jest najczęściej używany do tworzenia stron internetowych?",
+                answers: ["Python", "Java", "JavaScript", "C++"],
+                correct: 2
+            },
+            {
+                question: "W którym roku rozpoczęła się II wojna światowa?",
+                answers: ["1938", "1939", "1940", "1941"],
+                correct: 1
+            },
+            {
+                question: "Która z tych liczb jest liczbą pierwszą?",
+                answers: ["15", "21", "17", "25"],
+                correct: 2
+            },
+            {
+                question: "Jak nazywa się stolica Australii?",
+                answers: ["Sydney", "Melbourne", "Canberra", "Perth"],
+                correct: 2
+            },
+            {
+                question: "Który element chemiczny ma symbol 'Au'?",
+                answers: ["Srebro", "Złoto", "Aluminium", "Argon"],
+                correct: 1
+            },
+            {
+                question: "Ile kości ma dorosły człowiek?",
+                answers: ["196", "206", "216", "226"],
+                correct: 1
+            },
+            {
+                question: "Która z tych książek została napisana przez J.K. Rowling?",
+                answers: ["Władca Pierścieni", "Harry Potter", "Gra o Tron", "Kroniki Narnii"],
+                correct: 1
+            },
+            {
+                question: "Które zwierzę jest symbolem WWF?",
+                answers: ["Tygrys", "Słoń", "Panda", "Wieloryb"],
+                correct: 2
+            }
+        ];
+
+        // Current session data
+        let currentUser = null;
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let quizScore = 0;
+        let quizStarted = false;
+
+        // jQuery Document Ready
+        $(document).ready(function() {
+            // Initialize quiz system
+            initializeQuiz();
+            
+            // Add enter key support for login
+            $('#username, #password').keypress(function(e) {
+                if (e.which === 13) {
+                    login();
+                }
+            });
+
+            // Add hover effects to inputs
+            $('.login, .password').focus(function() {
+                $(this).parent().css('transform', 'scale(1.02)');
+            }).blur(function() {
+                $(this).parent().css('transform', 'scale(1)');
+            });
+        });
+
+        // Initialize Quiz System
+        function initializeQuiz() {
+            $('#totalQuestions').text(quizQuestions.length);
+            resetQuiz();
+        }
+
+        // Login function
+        function login() {
+            const username = $('#username').val().trim();
+            const password = $('#password').val();
+            const $messageDiv = $('#message');
+
+            // Clear previous messages
+            $messageDiv.removeClass('show success error');
+
+            // Validate input
+            if (!username || !password) {
+                showMessage('Wprowadź nazwę użytkownika i hasło!', 'error');
+                return;
+            }
+
+            // Check credentials
+            if (userDatabase[username] && userDatabase[username].password === password) {
+                // Successful login
+                currentUser = {
+                    username: username,
+                    ...userDatabase[username]
+                };
+                
+                // Update last login
+                userDatabase[username].lastLogin = new Date().toLocaleString('pl-PL');
+                
+                showMessage('Logowanie pomyślne!', 'success');
+                
+                // Show dashboard after short delay
+                setTimeout(() => {
+                    showDashboard();
+                }, 1000);
+                
+            } else {
+                // Failed login
+                showMessage('Nieprawidłowa nazwa użytkownika lub hasło!', 'error');
+                $('#password').val('');
+            }
+        }
+
+        // Show message function
+        function showMessage(text, type) {
+            const $messageDiv = $('#message');
+            $messageDiv.text(text).addClass('show ' + type);
+            
+            if (type === 'error') {
+                setTimeout(() => {
+                    $messageDiv.removeClass('show');
+                }, 3000);
+            }
+        }
+
+        // Show dashboard function
+        function showDashboard() {
+            $('#loginForm').hide();
+            $('#quizDashboard').show();
+            
+            // Update user info
+            $('#userInfo').html(`
+                <strong>Użytkownik:</strong> ${currentUser.name} (${currentUser.username})<br>
+                <strong>Rola:</strong> ${currentUser.role}<br>
+                <strong>Ostatnie logowanie:</strong> ${currentUser.lastLogin || 'Pierwsze logowanie'}
+            `);
+
+            resetQuiz();
+        }
+
+        // Start Quiz Function
+        function startQuiz() {
+            $('#quizDashboard').hide();
+            $('#quizContainer').show();
+            $('#quizResults').hide();
+            
+            quizStarted = true;
+            displayQuestion();
+        }
+
+        // Display Current Question
+        function displayQuestion() {
+            const question = quizQuestions[currentQuestionIndex];
+            
+            // Update question info
+            $('#currentQuestionNum').text(currentQuestionIndex + 1);
+            $('#questionText').text(question.question);
+            
+            // Update progress
+            const progress = ((currentQuestionIndex + 1) / quizQuestions.length) * 100;
+            $('#progressFill').css('width', progress + '%');
+            $('#progressPercent').text(Math.round(progress) + '%');
+            
+            // Display answers
+            const $answersList = $('#answersList');
+            $answersList.empty();
+            
+            question.answers.forEach((answer, index) => {
+                const letter = String.fromCharCode(65 + index); // A, B, C, D
+                const isSelected = userAnswers[currentQuestionIndex] === index;
+                
+                const $answerOption = $(`
+                    <li class="answer-option ${isSelected ? 'selected' : ''}" data-index="${index}">
+                        <div class="answer-letter">${letter}</div>
+                        <span>${answer}</span>
+                    </li>
+                `);
+                
+                $answersList.append($answerOption);
+            });
+            
+            // Update buttons
+            $('#prevBtn').prop('disabled', currentQuestionIndex === 0);
+            
+            if (currentQuestionIndex === quizQuestions.length - 1) {
+                $('#nextBtn').hide();
+                $('#submitBtn').show();
+            } else {
+                $('#nextBtn').show();
+                $('#submitBtn').hide();
+            }
+            
+            // Add click handlers for answers
+            $('.answer-option').click(function() {
+                const selectedIndex = $(this).data('index');
+                selectAnswer(selectedIndex);
+            });
+        }
+
+        // Select Answer Function
+        function selectAnswer(answerIndex) {
+            userAnswers[currentQuestionIndex] = answerIndex;
+            
+            // Update visual selection
+            $('.answer-option').removeClass('selected');
+            $(`.answer-option[data-index="${answerIndex}"]`).addClass('selected');
+            
+            // Enable next button with slight delay for better UX
+            setTimeout(() => {
+                if (currentQuestionIndex < quizQuestions.length - 1) {
+                    nextQuestion();
+                }
+            }, 500);
+        }
+
+        // Next Question Function
+        function nextQuestion() {
+            if (currentQuestionIndex < quizQuestions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion();
+            }
+        }
+
+        // Previous Question Function
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion();
+            }
+        }
+
+        // Submit Quiz Function
+        function submitQuiz() {
+            // Calculate score
+            quizScore = 0;
+            for (let i = 0; i < quizQuestions.length; i++) {
+                if (userAnswers[i] === quizQuestions[i].correct) {
+                    quizScore++;
+                }
+            }
+            
+            showResults();
+        }
+
+        // Show Results Function
+        function showResults() {
+            $('#quizContainer').hide();
+            $('#quizResults').show();
+            
+            const percentage = Math.round((quizScore / quizQuestions.length) * 100);
+            
+            // Animate score
+            $('#finalScore').text(`${quizScore}/${quizQuestions.length}`);
+            
+            // Set score circle color based on performance
+            let scoreColor;
+            if (percentage >= 80) {
+                scoreColor = 'linear-gradient(135deg, #4caf50 0%, #8bc34a 100%)';
+            } else if (percentage >= 60) {
+                scoreColor = 'linear-gradient(135deg, #ff9800 0%, #f57c00 100%)';
+            } else {
+                scoreColor = 'linear-gradient(135deg, #f44336 0%, #d32f2f 100%)';
+            }
+            
+            $('#finalScore').parent().css('background', scoreColor);
+            
+            // Show detailed results
+            let resultText = `
+                <h3>Twój wynik: ${percentage}%</h3>
+                <p><strong>Poprawne odpowiedzi:</strong> ${quizScore} z ${quizQuestions.length}</p>
+                <p><strong>Niepoprawne odpowiedzi:</strong> ${quizQuestions.length - quizScore}</p>
+            `;
+            
+            if (percentage >= 80) {
+                resultText += '<p style="color: #4caf50; font-weight: bold;">Świetny wynik! 🎉</p>';
+            } else if (percentage >= 60) {
+                resultText += '<p style="color: #ff9800; font-weight: bold;">Dobry wynik! 👍</p>';
+            } else {
+                resultText += '<p style="color: #f44336; font-weight: bold;">Możesz lepiej! Spróbuj ponownie 💪</p>';
+            }
+            
+            $('#resultsDetails').html(resultText);
+        }
+
+        // Restart Quiz Function
+        function restartQuiz() {
+            resetQuiz();
+            $('#quizResults').hide();
+            $('#quizDashboard').show();
+        }
+
+        // Reset Quiz Function
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            quizScore = 0;
+            quizStarted = false;
+            $('#currentScore').text(0);
+        }
+
+        // Logout function
+        function logout() {
+            currentUser = null;
+            resetQuiz();
+            
+            // Show login form and hide others
+            $('#loginForm').show();
+            $('#quizDashboard').hide();
+            $('#quizContainer').hide();
+            $('#quizResults').hide();
+            
+            // Clear form
+            $('#username').val('');
+            $('#password').val('');
+            $('#message').removeClass('show success error');
+        }
+    </script>
 </body>
 </html>
